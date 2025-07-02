@@ -22,18 +22,19 @@ export default function MuseumForm({ initialData, onSubmit, isEditing = false, c
 
     useEffect(() => {
         if (isEditing && initialData) {
-            // Actualiza formData con initialData si estamos editando
-            setFormData(prevFormData => {
-                // Si la data inicial es la misma, evita re-renderizados innecesarios
-                // (puedes mantener tu lógica de comparación existente si es más compleja)
-                // Asegúrate de que el 'estado' se copie de initialData
-                return {
-                    ...initialData,
-                    imagen: null, // Siempre null para el input de tipo file
-                    categories: initialData.categories?.map(cat => cat.id || cat) || [],
-                    // **CORRECCIÓN CLAVE AQUÍ:**
-                    estado: initialData.estado || 'active' // Asegura que el estado se tome de los datos iniciales
-                };
+            setFormData({
+                nombre: initialData.nombre || '',
+                imagen: null, // Mantener null para permitir cambiar la imagen
+                hora_de_apertura: initialData.hora_de_apertura || '09:00',
+                hora_de_cierre: initialData.hora_de_cierre || '17:00',
+                latitud: initialData.latitud || '',
+                longitud: initialData.longitud || '',
+                descripcion: initialData.descripcion || '',
+                precio: initialData.precio || '',
+                url: initialData.url || '',
+                numero_de_salas: initialData.numero_de_salas || 1,
+                estado: initialData.estado || 'active',
+                categories: initialData.categories || []
             });
         }
     }, [initialData, isEditing]);
@@ -68,7 +69,7 @@ export default function MuseumForm({ initialData, onSubmit, isEditing = false, c
 
         if (!isEditing && !formData.imagen) {
             newErrors.imagen = 'Debes seleccionar una imagen';
-        } else if (formData.imagen && !['image/jpeg', 'image/png'].includes(formData.imagen.type)) {
+        } else if (formData.imagen && !['image/jpeg', 'image/png', 'image/webp'].includes(formData.imagen.type)) {
             newErrors.imagen = 'La imagen debe ser un archivo JPG o PNG';
         }
 
@@ -134,12 +135,9 @@ export default function MuseumForm({ initialData, onSubmit, isEditing = false, c
             setSubmitSuccess(null);
 
             if (onSubmit) {
-                // Para edición, llama a la prop onSubmit con el formData completo
                 await onSubmit(formData);
                 setSubmitSuccess('Museo actualizado exitosamente');
-                // La navegación para edición se maneja en el padre (MuseumEditForm)
             } else {
-                // Lógica para creación
                 const formDataToSend = new FormData();
                 formDataToSend.append('name', formData.nombre);
                 if (formData.imagen) {
@@ -154,12 +152,10 @@ export default function MuseumForm({ initialData, onSubmit, isEditing = false, c
                 formDataToSend.append('ticket_price', formData.precio);
                 formDataToSend.append('url', formData.url);
                 formDataToSend.append('number_of_rooms', formData.numero_de_salas);
-                formDataToSend.append('status', formData.estado); // Aquí se envía el estado para creación
-
+                formDataToSend.append('status', formData.estado);
                 formData.categories.forEach(categoryId => {
                     formDataToSend.append('category_ids[]', categoryId);
                 });
-
                 await apiClient.post('/api/museums', formDataToSend, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
@@ -171,8 +167,8 @@ export default function MuseumForm({ initialData, onSubmit, isEditing = false, c
         } catch (err) {
             console.error('Error saving museum:', err);
             const errorMessage = err.response && err.response.data && err.response.data.message
-                                 ? err.response.data.message
-                                 : 'No se pudo guardar el museo. Por favor, intenta de nuevo.';
+                ? err.response.data.message
+                : 'No se pudo guardar el museo. Por favor, intenta de nuevo.';
             setSubmitError(errorMessage);
             setSubmitSuccess(null);
 
@@ -204,7 +200,7 @@ export default function MuseumForm({ initialData, onSubmit, isEditing = false, c
             </h2>
             <div className="my-4">
                 <Link
-                    className="bg-indigo-100 text-indigo-700 hover:bg-indigo-300 py-2 px-4 rounded"
+                    className="bg-purple-100 text-purple-700 hover:bg-purple-300 py-2 px-4 rounded"
                     to={'/museums'}
                 >
                     Volver
@@ -228,9 +224,8 @@ export default function MuseumForm({ initialData, onSubmit, isEditing = false, c
                         value={formData.nombre}
                         onChange={handleChange}
                         required
-                        className={`mt-1 block w-full px-3 py-2 border ${
-                            errors.nombre ? 'border-red-500' : 'border-gray-300'
-                        } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
+                        className={`mt-1 block w-full px-3 py-2 border ${errors.nombre ? 'border-red-500' : 'border-gray-300'
+                            } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
                         placeholder="Ej. Museo de Antropología"
                     />
                     {errors.nombre && <p className="text-red-500 text-sm mt-1">{errors.nombre}</p>}
@@ -256,11 +251,10 @@ export default function MuseumForm({ initialData, onSubmit, isEditing = false, c
                         id="imagen"
                         name="imagen"
                         type="file"
-                        accept="image/jpeg,image/png"
+                        accept="image/jpeg,image/png,image/webp"
                         onChange={handleChange}
-                        className={`mt-1 block w-full px-3 py-2 border ${
-                            errors.imagen ? 'border-red-500' : 'border-gray-300'
-                        } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
+                        className={`mt-1 block w-full px-3 py-2 border ${errors.imagen ? 'border-red-500' : 'border-gray-300'
+                            } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
                     />
                     {errors.imagen && <p className="text-red-500 text-sm mt-1">{errors.imagen}</p>}
                     {isEditing && (
@@ -279,9 +273,8 @@ export default function MuseumForm({ initialData, onSubmit, isEditing = false, c
                         <div className="mt-2 text-sm text-gray-500">Cargando categorías...</div>
                     ) : (
                         <div className="space-y-2">
-                            <div className={`p-4 border rounded-md ${
-                                errors.categories ? 'border-red-500 bg-red-50' : 'border-gray-300'
-                            }`}>
+                            <div className={`p-4 border rounded-md ${errors.categories ? 'border-red-500 bg-red-50' : 'border-gray-300'
+                                }`}>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                     {categories.map(category => (
                                         <div key={category.id} className="flex items-start">
@@ -360,9 +353,8 @@ export default function MuseumForm({ initialData, onSubmit, isEditing = false, c
                             value={formData.latitud}
                             onChange={handleChange}
                             required
-                            className={`mt-1 block w-full px-3 py-2 border ${
-                                errors.latitud ? 'border-red-500' : 'border-gray-300'
-                            } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
+                            className={`mt-1 block w-full px-3 py-2 border ${errors.latitud ? 'border-red-500' : 'border-gray-300'
+                                } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
                             placeholder="Ej. 19.42625107"
                         />
                         {errors.latitud && <p className="text-red-500 text-sm mt-1">{errors.latitud}</p>}
@@ -379,9 +371,8 @@ export default function MuseumForm({ initialData, onSubmit, isEditing = false, c
                             value={formData.longitud}
                             onChange={handleChange}
                             required
-                            className={`mt-1 block w-full px-3 py-2 border ${
-                                errors.longitud ? 'border-red-500' : 'border-gray-300'
-                            } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
+                            className={`mt-1 block w-full px-3 py-2 border ${errors.longitud ? 'border-red-500' : 'border-gray-300'
+                                } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
                             placeholder="Ej. -99.18630006"
                         />
                         {errors.longitud && <p className="text-red-500 text-sm mt-1">{errors.longitud}</p>}
@@ -414,9 +405,8 @@ export default function MuseumForm({ initialData, onSubmit, isEditing = false, c
                         value={formData.precio}
                         onChange={handleChange}
                         required
-                        className={`mt-1 block w-full px-3 py-2 border ${
-                            errors.precio ? 'border-red-500' : 'border-gray-300'
-                        } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
+                        className={`mt-1 block w-full px-3 py-2 border ${errors.precio ? 'border-red-500' : 'border-gray-300'
+                            } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
                         placeholder="Ej. 250"
                     />
                     {errors.precio && <p className="text-red-500 text-sm mt-1">{errors.precio}</p>}
@@ -433,9 +423,8 @@ export default function MuseumForm({ initialData, onSubmit, isEditing = false, c
                         value={formData.url}
                         onChange={handleChange}
                         required
-                        className={`mt-1 block w-full px-3 py-2 border ${
-                            errors.url ? 'border-red-500' : 'border-gray-300'
-                        } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
+                        className={`mt-1 block w-full px-3 py-2 border ${errors.url ? 'border-red-500' : 'border-gray-300'
+                            } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
                         placeholder="Ej. https://www.mna.inah.gob.mx/"
                     />
                     {errors.url && <p className="text-red-500 text-sm mt-1">{errors.url}</p>}
@@ -453,9 +442,8 @@ export default function MuseumForm({ initialData, onSubmit, isEditing = false, c
                         onChange={handleChange}
                         required
                         min="1"
-                        className={`mt-1 block w-full px-3 py-2 border ${
-                            errors.numero_de_salas ? 'border-red-500' : 'border-gray-300'
-                        } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
+                        className={`mt-1 block w-full px-3 py-2 border ${errors.numero_de_salas ? 'border-red-500' : 'border-gray-300'
+                            } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
                         placeholder="Ej. 1"
                     />
                     {errors.numero_de_salas && <p className="text-red-500 text-sm mt-1">{errors.numero_de_salas}</p>}
@@ -487,7 +475,7 @@ export default function MuseumForm({ initialData, onSubmit, isEditing = false, c
                     </button>
                     <button
                         type="submit"
-                        className="py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200"
+                        className="py-2 px-4 bg-purple-100 text-purple-800 rounded-md hover:bg-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition duration-200"
                     >
                         {isEditing ? 'Actualizar Museo' : 'Guardar Museo'}
                     </button>

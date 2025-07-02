@@ -2,15 +2,17 @@ import React, { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import apiClient from '../../../api/apiClient';
 
-export default function DiscountForm() {
+export default function DiscountForm({ initialData = null, onSubmit = null, isEditing = false }) {
   const { museumId } = useParams();
   const navigate = useNavigate();
   
-  const [formData, setFormData] = useState({
-    discount: '',
-    description: '',
-    museum_id: museumId // Campo prellenado con el ID del museo
-  });
+  const [formData, setFormData] = useState(
+    initialData || {
+      discount: '',
+      description: '',
+      museum_id: museumId
+    }
+  );
   
   const [errors, setErrors] = useState({});
   const [submitError, setSubmitError] = useState(null);
@@ -20,7 +22,6 @@ export default function DiscountForm() {
   const validateForm = () => {
     const newErrors = {};
     
-    // Validar descuento: debe ser un número entre 0 y 1
     const discountValue = parseFloat(formData.discount);
     if (isNaN(discountValue) || discountValue < 0 || discountValue > 1) {
       newErrors.discount = 'El descuento debe ser un valor decimal entre 0 y 1 (ej: 0.15 para 15%)';
@@ -38,7 +39,6 @@ export default function DiscountForm() {
     
     setFormData({ ...formData, [name]: value });
     
-    // Limpiar error cuando el usuario edita
     if (errors[name]) {
       setErrors({ ...errors, [name]: null });
     }
@@ -50,7 +50,6 @@ export default function DiscountForm() {
     setSubmitError(null);
     setSubmitSuccess(null);
     
-    // Validar formulario
     const validationErrors = validateForm();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
@@ -59,28 +58,44 @@ export default function DiscountForm() {
     }
 
     try {
-      // Crear objeto con los datos
       const dataToSend = {
         discount: parseFloat(formData.discount),
         description: formData.description,
         museum_id: formData.museum_id
       };
 
-      // Enviar datos al servidor
-      await apiClient.post('/api/discounts', dataToSend);
-      
-      // Manejar respuesta exitosa
-      setSubmitSuccess('Descuento creado exitosamente!');
-      setTimeout(() => navigate(`/museums/${museumId}`), 2000);
+      if (isEditing && onSubmit) {
+        await onSubmit(dataToSend);
+        setSubmitSuccess('Descuento actualizado exitosamente!');
+        setTimeout(() => navigate(`/museums/${museumId}`), 2000);
+      } else {
+        await apiClient.post('/api/discounts', dataToSend);
+        setSubmitSuccess('Descuento creado exitosamente!');
+        setTimeout(() => navigate(`/museums/${museumId}`), 2000);
+      }
     } catch (err) {
-      console.error('Error creating discount:', err);
+      console.error('Error saving discount:', err);
       
-      let errorMessage = 'No se pudo crear el descuento. Por favor, intenta de nuevo.';
+      let errorMessage = isEditing
+        ? 'No se pudo actualizar el descuento. Por favor, intenta de nuevo.'
+        : 'No se pudo crear el descuento. Por favor, intenta de nuevo.';
       if (err.response && err.response.data && err.response.data.message) {
         errorMessage = err.response.data.message;
       }
       
       setSubmitError(errorMessage);
+
+      if (err.response && err.response.status === 422 && err.response.data.errors) {
+        const backendErrors = err.response.data.errors;
+        const mappedErrors = {};
+        for (const key in backendErrors) {
+          let fieldName = key;
+          if (key === 'valor_descuento') fieldName = 'discount';
+          if (key === 'descripcion_aplicacion') fieldName = 'description';
+          mappedErrors[fieldName] = backendErrors[key][0];
+        }
+        setErrors(mappedErrors);
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -89,7 +104,9 @@ export default function DiscountForm() {
   return (
     <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-lg p-6 mt-8">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">Crear Nuevo Descuento</h1>
+        <h1 className="text-2xl font-bold text-gray-800">
+          {isEditing ? 'Editar Descuento' : 'Crear Nuevo Descuento'}
+        </h1>
         <Link 
           to={`/museums/${museumId}`}
           className="bg-gray-100 text-gray-700 hover:bg-gray-200 py-2 px-4 rounded-md transition"
@@ -98,7 +115,6 @@ export default function DiscountForm() {
         </Link>
       </div>
       
-      {/* Mostrar información del museo asociado */}
       <div className="mb-6 p-4 bg-purple-50 rounded-lg border border-purple-100">
         <h3 className="text-sm font-medium text-purple-800">Descuento para el museo:</h3>
         <p className="text-lg font-semibold text-purple-900">ID: {museumId}</p>
@@ -108,7 +124,6 @@ export default function DiscountForm() {
         </p>
       </div>
       
-      {/* Mensajes de estado */}
       {submitError && (
         <div className="mb-6 p-4 bg-red-50 text-red-700 rounded-lg">
           <p className="font-medium">Error:</p>
@@ -123,7 +138,6 @@ export default function DiscountForm() {
         </div>
       )}
       
-      {/* Formulario */}
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
           <label htmlFor="discount" className="block text-sm font-medium text-gray-700 mb-1">
@@ -203,14 +217,13 @@ export default function DiscountForm() {
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
-                Creando descuento...
+                {isEditing ? 'Actualizando descuento...' : 'Creando descuento...'}
               </div>
-            ) : 'Crear Descuento'}
+            ) : (isEditing ? 'Actualizar Descuento' : 'Crear Descuento')}
           </button>
         </div>
       </form>
       
-      {/* Ejemplos de descuentos */}
       <div className="mt-8 bg-gray-50 p-4 rounded-lg">
         <h3 className="text-sm font-medium text-gray-700 mb-2">Ejemplos de valores de descuento:</h3>
         <div className="grid grid-cols-3 gap-2">

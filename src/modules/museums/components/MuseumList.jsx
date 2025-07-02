@@ -68,12 +68,12 @@ export default function MuseumList() {
 
                 <Link
                     to="/museums/new"
-                    className="bg-indigo-100 text-indigo-800 py-2 px-4 rounded-md hover:bg-indigo-300 transition duration-200"
+                    className="bg-purple-100 text-purple-700  font-medium hover:bg-purple-300 py-2 px-4 rounded"
                 >
                     Agregar Museo
                 </Link>
 
-                
+
 
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -107,14 +107,14 @@ export default function MuseumList() {
                                     href={museum.url}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="bg-indigo-100 text-indigo-700  font-medium hover:bg-indigo-300 py-2 px-4 rounded"
+                                    className="bg-purple-100 text-purple-700  font-medium hover:bg-purple-300 py-2 px-4 rounded"
 
                                 >
                                     Visitar sitio
                                 </a>
                                 <Link
                                     to={`/museums/${museum.id}`}
-                                    className="bg-indigo-100 text-indigo-700  font-medium hover:bg-indigo-300 py-2 px-4 rounded"
+                                    className="bg-purple-100 text-purple-700  font-medium hover:bg-purple-300 py-2 px-4 rounded"
                                 >
                                     Ver detalles
                                 </Link>

@@ -43,18 +43,14 @@ export default function CategoryManager() {
     try {
       setIsCreating(true);
       setCreateError(null);
-      
       const response = await apiClient.post('/api/categories', {
         name: newCategory
       });
-
       setCategories([...categories, response.data]);
       setNewCategory('');
-      setSuccessMessage(`Categoría "${response.data.name}" creada exitosamente!`);
+      setSuccessMessage(`Categoría "${response.data.nombre}" creada exitosamente!`);
       setTimeout(() => setSuccessMessage(null), 3000);
     } catch (err) {
-      console.error('Error creating category:', err);
-      
       let errorMsg = 'Error al crear la categoría';
       if (err.response && err.response.data && err.response.data.message) {
         errorMsg = err.response.data.message;
@@ -68,7 +64,7 @@ export default function CategoryManager() {
   // Iniciar edición
   const startEditing = (category) => {
     setEditingId(category.id);
-    setEditingName(category.name);
+    setEditingName(category.nombre);
   };
 
   // Cancelar edición
@@ -93,7 +89,7 @@ export default function CategoryManager() {
         cat.id === id ? response.data : cat
       ));
       
-      setSuccessMessage(`Categoría actualizada a "${response.data.name}"!`);
+      setSuccessMessage(`Categoría actualizada a "${response.data.nombre}"!`);
       setTimeout(() => setSuccessMessage(null), 3000);
       cancelEditing();
     } catch (err) {
@@ -260,7 +256,7 @@ export default function CategoryManager() {
                             Editar
                           </button>
                           <button
-                            onClick={() => handleDeleteCategory(category.id, category.name)}
+                            onClick={() => handleDeleteCategory(category.id, category.nombre)}
                             className="px-3 py-1 bg-red-600 text-white rounded-md hover:bg-red-700 text-sm"
                           >
                             Eliminar

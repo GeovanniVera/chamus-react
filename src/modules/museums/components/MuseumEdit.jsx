@@ -15,8 +15,9 @@ export default function MuseumEditForm() {
         const fetchMuseum = async () => {
             try {
                 const response = await apiClient.get(`/api/museums/${id}`);
+                console.log('Datos del museo recibidos:', response.data); // Para depuración
                 setMuseumData(response.data);
-                setCurrentImage(response.data.image); // Asegúrate de que el campo sea 'image' si tu backend lo devuelve así
+                setCurrentImage(response.data.image);
                 setLoading(false);
             } catch (err) {
                 console.error('Error fetching museum:', err);
@@ -34,7 +35,6 @@ export default function MuseumEditForm() {
 
             // Esto es crucial para métodos PUT/PATCH con multipart/form-data en Laravel
             formDataToSend.append('_method', 'PUT');
-
             formDataToSend.append('name', formData.nombre);
             formDataToSend.append('opening_time', formData.hora_de_apertura);
             formDataToSend.append('clossing_time', formData.hora_de_cierre);
@@ -44,12 +44,12 @@ export default function MuseumEditForm() {
             formDataToSend.append('ticket_price', formData.precio);
             formDataToSend.append('url', formData.url);
             formDataToSend.append('number_of_rooms', formData.numero_de_salas);
-            formDataToSend.append('status', formData.estado); 
+            formDataToSend.append('status', formData.estado);
 
-          
+
             if (formData.imagen) {
                 formDataToSend.append('image', formData.imagen);
-            } 
+            }
 
             // Asegúrate de que las categorías se envíen como un array de IDs
             formData.categories.forEach(categoryId => {
@@ -74,8 +74,8 @@ export default function MuseumEditForm() {
         } catch (err) {
             console.error('Error updating museum:', err);
             const errorMessage = err.response && err.response.data && err.response.data.message
-                                 ? err.response.data.message
-                                 : 'No se pudo actualizar el museo. Por favor, intenta de nuevo.';
+                ? err.response.data.message
+                : 'No se pudo actualizar el museo. Por favor, intenta de nuevo.';
             setError(errorMessage);
 
             if (err.response && err.response.status === 422 && err.response.data.errors) {
@@ -110,16 +110,16 @@ export default function MuseumEditForm() {
 
     const initialFormData = {
         nombre: museumData.nombre,
-        imagen: null, 
-        hora_de_apertura: museumData.opening_time?.substring(0, 5) || '09:00', 
-        hora_de_cierre: museumData.clossing_time?.substring(0, 5) || '17:00', 
-        latitud: museumData.latitude,
-        longitud: museumData.longitude,
-        descripcion: museumData.description,
-        precio: museumData.ticket_price,
+        imagen: null,
+        hora_de_apertura: museumData.hora_de_apertura?.substring(0, 5) || '09:00',
+        hora_de_cierre: museumData.hora_de_cierre?.substring(0, 5) || '17:00',
+        latitud: museumData.latitud,
+        longitud: museumData.longitud,
+        descripcion: museumData.descripcion,
+        precio: museumData.precio,
         url: museumData.url,
-        numero_de_salas: museumData.number_of_rooms,
-        estado: museumData.status, 
+        numero_de_salas: museumData.numero_de_salas,
+        estado: museumData.estado,
         categories: museumData.categories?.map(category => category.id) || [] // Mapea a IDs
     };
 

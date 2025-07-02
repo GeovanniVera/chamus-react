@@ -1,7 +1,11 @@
 import axios from 'axios';
 
+const PRODUCCION_URL = "https://chamus.restteach.com"
+const LOCAL_URL = "http://localhost:8000"
+
+
 const apiClient = axios.create({
-  baseURL: 'https://chamus.restteach.com',
+  baseURL: LOCAL_URL,
   headers: {
     'Content-Type': 'application/json',
     'Accept' : 'application/json'
@@ -10,10 +14,8 @@ const apiClient = axios.create({
 
 apiClient.interceptors.request.use(
   (config) => {
-    // Obtener el token del localStorage
-    const token = localStorage.getItem('authToken');
+    const token = localStorage.getItem('AUTH_TOKEN');
     if (token) {
-      // Si el token existe, lo añadimos al header Authorization
       config.headers['Authorization'] = `Bearer ${token}`;
     }
     return config;
@@ -26,11 +28,9 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
-    // Manejar errores de autenticación (401, 403)
     if (error.response && (error.response.status === 401 || error.response.status === 403)) {
-      // Aquí puedes manejar la lógica de redirección a login
       console.error('Error de autenticación - Redirigiendo a login');
-      localStorage.removeItem('authToken'); // Eliminar token inválido
+      localStorage.removeItem('authToken'); 
     }
     return Promise.reject(error);
   }

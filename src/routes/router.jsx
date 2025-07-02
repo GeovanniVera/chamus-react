@@ -12,71 +12,93 @@ import RoomForm from '../modules/rooms/components/RoomForm';
 import DiscountForm from '../modules/discounts/components/DiscountForm';
 import CategoryManager from '../modules/categories/components/CategoryManager';
 import MuseumEditForm from '../modules/museums/components/MuseumEdit';
+import RoomEditForm from '../modules/rooms/components/RoomEditForm';
+import DiscountEditForm from '../modules/discounts/components/DiscountEditForm';
+import UserManager from '../modules/users/components/UserManager';
+import ProtectedRoute from '../components/ProtectedRoute';
+import PublicRoute from '../components/PublicRoute';
 
 const router = createBrowserRouter([
   {
-    path: '/',
-    element: <Layout />,
+    element: <ProtectedRoute />,
     children: [
       {
-        index: true,
-        element: <Home />
-      },
-      {
-        path: '/museums',
-        element : <MuseumList />
-      },
-      {
-        path: '/museums/:id',
-        element : <MuseumDetail />
-      },
-      {
-        path: '/museums/new',
-        element : <MuseumForm />
-      },
-      {
-        path : '/museums/edit/:id',
-        element : <MuseumEditForm/>
-      },
-      {
-        path: '/discounts/new/:museumId',
-        element : <DiscountForm />
-      },
-      {
-        path: '/rooms/new/:museumId',
-        element : <RoomForm />
-      },
-      {
-        path: '/rooms/:id',
-        element : <RoomDetail />
-      },
-      {
-        path: '/categories',
-        element : <CategoryManager />
-      },
-      {
-        path: '/users',
-        element : <MuseumList />
-      },
-      {
-        path: '/posts',
-        element : <MuseumList />
+        path: '/',
+        element: <Layout />,
+        children: [
+          {
+            index: true,
+            element: <Home />
+          },
+          {
+            path: '/museums',
+            element: <MuseumList />
+          },
+          {
+            path: '/museums/:id',
+            element: <MuseumDetail />
+          },
+          {
+            path: '/museums/new',
+            element: <MuseumForm />
+          },
+          {
+            path: '/museums/edit/:id',
+            element: <MuseumEditForm />
+          },
+          {
+            path: '/discounts/new/:museumId',
+            element: <DiscountForm />
+          },
+          {
+            path: '/museums/:museumId/discounts/:discountId/edit',
+            element: <DiscountEditForm />
+          },
+          {
+            path: '/rooms/new/:museumId',
+            element: <RoomForm />
+          },
+          {
+            path: '/museums/:museumId/rooms/:roomId/edit',
+            element: <RoomEditForm />
+          },
+          {
+            path: '/rooms/:id',
+            element: <RoomDetail />
+          },
+          {
+            path: '/categories',
+            element: <CategoryManager />
+          },
+          {
+            path: '/users',
+            element: <UserManager />
+          },
+          {
+            path: '/posts',
+            element: <MuseumList />
+          }
+        ]
       }
     ]
   },
   {
-    path: '/auth',
-    element: <AuthLayout />,
+    element: <PublicRoute />,
     children: [
       {
-        index: true,
-        element: <Login />
-      },
-      {
-        path: 'login',
-        element: <Login />
-      },
-      
+        path: '/auth',
+        element: <AuthLayout />,
+        children: [
+          {
+            index: true,
+            element: <Login />
+          },
+          {
+            path: 'login',
+            element: <Login />
+          }
+        ]
+      }
     ]
   }
 ]);
