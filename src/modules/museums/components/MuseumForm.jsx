@@ -15,7 +15,6 @@ export default function MuseumForm({ initialData, onSubmit, isEditing = false, c
         descripcion: '',
         precio: '',
         url: '',
-        numero_de_salas: 1,
         estado: 'active', // Valor por defecto para creación
         categories: []
     });
@@ -32,7 +31,6 @@ export default function MuseumForm({ initialData, onSubmit, isEditing = false, c
                 descripcion: initialData.descripcion || '',
                 precio: initialData.precio || '',
                 url: initialData.url || '',
-                numero_de_salas: initialData.numero_de_salas || 1,
                 estado: initialData.estado || 'active',
                 categories: initialData.categories || []
             });
@@ -85,9 +83,7 @@ export default function MuseumForm({ initialData, onSubmit, isEditing = false, c
         if (formData.url && !formData.url.match(/^https?:\/\/.+/)) {
             newErrors.url = 'La URL debe comenzar con http:// o https://';
         }
-        if (formData.numero_de_salas < 1) {
-            newErrors.numero_de_salas = 'El número de salas debe ser al menos 1';
-        }
+        
         if (formData.categories.length === 0) {
             newErrors.categories = 'Debes seleccionar al menos una categoría';
         }
@@ -151,7 +147,6 @@ export default function MuseumForm({ initialData, onSubmit, isEditing = false, c
                 formDataToSend.append('description', formData.descripcion);
                 formDataToSend.append('ticket_price', formData.precio);
                 formDataToSend.append('url', formData.url);
-                formDataToSend.append('number_of_rooms', formData.numero_de_salas);
                 formDataToSend.append('status', formData.estado);
                 formData.categories.forEach(categoryId => {
                     formDataToSend.append('category_ids[]', categoryId);
@@ -182,7 +177,6 @@ export default function MuseumForm({ initialData, onSubmit, isEditing = false, c
                     if (key === 'opening_time') fieldName = 'hora_de_apertura';
                     if (key === 'clossing_time') fieldName = 'hora_de_cierre';
                     if (key === 'ticket_price') fieldName = 'precio';
-                    if (key === 'number_of_rooms') fieldName = 'numero_de_salas';
                     if (key === 'status') fieldName = 'estado';
                     if (key === 'category_ids') fieldName = 'categories';
 
@@ -430,24 +424,7 @@ export default function MuseumForm({ initialData, onSubmit, isEditing = false, c
                     {errors.url && <p className="text-red-500 text-sm mt-1">{errors.url}</p>}
                 </div>
 
-                <div>
-                    <label htmlFor="numero_de_salas" className="block text-sm font-medium text-gray-700">
-                        Número de Salas
-                    </label>
-                    <input
-                        id="numero_de_salas"
-                        name="numero_de_salas"
-                        type="number"
-                        value={formData.numero_de_salas}
-                        onChange={handleChange}
-                        required
-                        min="1"
-                        className={`mt-1 block w-full px-3 py-2 border ${errors.numero_de_salas ? 'border-red-500' : 'border-gray-300'
-                            } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
-                        placeholder="Ej. 1"
-                    />
-                    {errors.numero_de_salas && <p className="text-red-500 text-sm mt-1">{errors.numero_de_salas}</p>}
-                </div>
+                
 
                 <div>
                     <label htmlFor="estado" className="block text-sm font-medium text-gray-700">

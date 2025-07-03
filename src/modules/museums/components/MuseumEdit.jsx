@@ -43,7 +43,6 @@ export default function MuseumEditForm() {
             formDataToSend.append('description', formData.descripcion);
             formDataToSend.append('ticket_price', formData.precio);
             formDataToSend.append('url', formData.url);
-            formDataToSend.append('number_of_rooms', formData.numero_de_salas);
             formDataToSend.append('status', formData.estado);
 
 
@@ -118,7 +117,6 @@ export default function MuseumEditForm() {
         descripcion: museumData.descripcion,
         precio: museumData.precio,
         url: museumData.url,
-        numero_de_salas: museumData.numero_de_salas,
         estado: museumData.estado,
         categories: museumData.categories?.map(category => category.id) || [] // Mapea a IDs
     };

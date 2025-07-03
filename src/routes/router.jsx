@@ -17,6 +17,7 @@ import DiscountEditForm from '../modules/discounts/components/DiscountEditForm';
 import UserManager from '../modules/users/components/UserManager';
 import ProtectedRoute from '../components/ProtectedRoute';
 import PublicRoute from '../components/PublicRoute';
+import NotFound from '../components/NotFound';
 
 const router = createBrowserRouter([
   {
@@ -100,6 +101,10 @@ const router = createBrowserRouter([
         ]
       }
     ]
+  },
+  {
+    path: '*',
+    element: <NotFound />
   }
 ]);
 

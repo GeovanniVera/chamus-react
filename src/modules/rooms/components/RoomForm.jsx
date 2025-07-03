@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import apiClient from '../../../api/apiClient';
+import { useParams } from 'react-router-dom';
 
-export default function RoomForm({ initialData, onSubmit, isEditing = false, currentImage = null, museumId }) {
+export default function RoomForm({ initialData, onSubmit, isEditing = false, currentImage = null }) {
   const navigate = useNavigate();
+  const { museumId} = useParams();
 
   const [formData, setFormData] = useState(
     initialData || {

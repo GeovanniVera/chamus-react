@@ -87,7 +87,7 @@ function Layout() {
         <header className="bg-white shadow p-4 flex justify-between items-center">
           <h1 className="text-xl font-semibold">Chamus Dashboard</h1>
         </header>
-        <main className="flex-1 p-6 overflow-y-auto">
+        <main className="flex-1 p-6 bg-gray-50 overflow-y-auto">
           <Outlet />
         </main>
       </div>

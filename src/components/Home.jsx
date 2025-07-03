@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 export default function Home() {
   return (
-    <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-6 mt-8">
+    <div className="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-md mt-10">
       <h1 className="text-3xl font-bold text-gray-800 mb-4 text-center">
         Bienvenido a Chamus
       </h1>
@@ -11,7 +11,7 @@ export default function Home() {
         Administra los museos, sus categorías y usuarios de manera eficiente con nuestro sistema.
       </p>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1  gap-4">
         <Link
           to="/categories"
           className="bg-blue-50 p-6 rounded-xl border border-blue-100 hover:bg-blue-100 transition text-center"
@@ -28,6 +28,16 @@ export default function Home() {
           <h2 className="text-xl font-semibold text-green-800 mb-2">Gestión de Usuarios</h2>
           <p className="text-gray-600">
             Crea, edita o elimina cuentas de usuarios para controlar el acceso al sistema.
+          </p>
+        </Link>
+
+        <Link
+          to="/museums"
+          className="bg-red-50 p-6 rounded-xl border border-red-100 hover:bg-red-100 transition text-center"
+        >
+          <h2 className="text-xl font-semibold text-red-800 mb-2">Gestión de Museos</h2>
+          <p className="text-gray-600">
+            Crea, edita o elimina museos en el sistema, aqui tambien se gestionan las salas y los descuentos.
           </p>
         </Link>
       </div>

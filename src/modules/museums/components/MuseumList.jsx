@@ -22,7 +22,6 @@ export default function MuseumList() {
                 descripcion: 'Es uno de los recintos museográficos más importantes de México y de América.',
                 precio: 250,
                 url: 'https://www.mna.inah.gob.mx/',
-                numero_de_salas: 1,
                 estado: 'active'
             }
         ];
