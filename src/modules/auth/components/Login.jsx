@@ -6,7 +6,7 @@ export default function Login() {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false); // Nuevo estado para controlar la visibilidad
+  const [showPassword, setShowPassword] = useState(false);
 
   const navigate = useNavigate();
   const { login } = useAuth();
@@ -40,7 +40,7 @@ export default function Login() {
   };
 
   return (
-    <> {/* Fragmento, ya que este componente no necesita su propio div contenedor */}
+    <>
       <h1 className="text-3xl font-semibold text-white mb-8 text-center">
         Inicia Sesión
       </h1>
@@ -70,20 +70,19 @@ export default function Login() {
           <label htmlFor="password" className="block text-sm font-medium text-white mb-2">
             Contraseña
           </label>
-          {/* Contenedor relativo para posicionar el icono del ojo */}
           <div className="relative">
             <input
               id="password"
               name="password"
-              type={showPassword ? 'password' : 'text'} 
+              type={showPassword ? 'text' : 'password'}
               value={formData.password}
               onChange={handleChange}
-              className="w-full px-5 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-300 focus:border-purple-600 outline-none text-gray-900 pr-10" // Añade padding a la derecha
+              className="w-full px-5 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-300 focus:border-purple-600 outline-none text-gray-900 pr-10"
               placeholder=""
               disabled={isLoading}
             />
             <button
-              type="button" // Importante: type="button" para no enviar el formulario
+              type="button"
               onClick={togglePasswordVisibility}
               className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700"
               aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
@@ -107,7 +106,7 @@ export default function Login() {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                 </svg>
               ) : (
-                // Ícono de ojo cerrado
+                // Ícono de ojo cerrado (eye-slash)
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -119,7 +118,7 @@ export default function Login() {
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    d="M3.981 12H12M3.981 12a8.7 8.7 0 0 0 0 3.038M3.981 12a8.7 8.7 0 0 1 0-3.038v-2.1c0-.496.183-.984.512-1.353m-1.314 5.39c.237.45.54.845.895 1.189M12 12a8.962 8.962 0 0 1-2.909 6.64M12 12c-2.85 0-5.167-.79-7.091-2.274M12 12c3.275 0 6-3.75 6-7.5M12 12a8.962 8.962 0 0 0-2.909-6.64m-1.314 5.39a9.664 9.664 0 0 0-.584-1.22M12 12c.983-.346 1.902-.68 2.766-.994M12 12a9 9 0 0 1 3.821 1.1M12 12c1.91 0 3.472-1.45 4.521-2.923M12 12a9 9 0 0 0 3.821 1.1M12 12a9 9 0 0 1-.681 4.75m.144-.092a8.995 8.995 0 0 0-.173.34l-.454.912C14.73 17.65 16.142 19.5 18 19.5c1.858 0 3.27-1.85 4.073-4.04M20.246 12a8.7 8.7 0 0 1 0-3.038v-2.1c0-.496-.183-.984-.512-1.353M20.246 12a8.7 8.7 0 0 0 0 3.038"
+                    d="M3.98 8.223A10.477 10.477 0 001.934 12c1.274 4.057 5.064 7 9.542 7 3.898 0 7.256-2.203 8.926-5.418m-4.632-.908a3 3 0 11-4.242-4.243M2.878 2.878l18 18"
                   />
                 </svg>
               )}

@@ -18,6 +18,7 @@ import UserManager from '../modules/users/components/UserManager';
 import ProtectedRoute from '../components/ProtectedRoute';
 import PublicRoute from '../components/PublicRoute';
 import NotFound from '../components/NotFound';
+import ListCotizaciones from '../modules/cotizaciones/ListCotizaciones';
 
 const router = createBrowserRouter([
   {
@@ -78,6 +79,10 @@ const router = createBrowserRouter([
           {
             path: '/posts',
             element: <MuseumList />
+          },
+          {
+            path: '/cotizaciones',
+            element: <ListCotizaciones />
           }
         ]
       }
